@@ -50,3 +50,23 @@ La classe `JwtService` sert à :
 - Extraire des informations des tokens
 - Vérifier leur validité et leur expiration  
   Le tout en s’appuyant sur la clé secrète définie dans la configuration de l’application.
+
+
+Voici le rôle des méthodes présentes dans la classe ApplicationConfig :
+
+1. userDetailsService()
+    - Cette méthode expose un bean UserDetailsService qui permet de charger un utilisateur à partir de son email (utilisé ici comme username). Elle utilise le UserRepository pour retrouver l'utilisateur et lève une exception si l'utilisateur n'est pas trouvé. Ce service est utilisé par Spring Security pour l'authentification.
+
+2. authenticationProvider()
+    - Définit un bean AuthenticationProvider basé sur DaoAuthenticationProvider. Il configure le provider pour utiliser le userDetailsService défini plus haut et un encodeur de mot de passe (passwordEncoder). Ce provider gère l’authentification des utilisateurs en vérifiant leur mot de passe et leurs informations.
+
+3. auditorAware()
+    - Fournit un bean AuditorAware utilisé pour l’audit des entités JPA, c’est-à-dire pour stocker automatiquement l’identifiant de l’utilisateur qui a créé ou modifié une entité. Ici, il retourne une instance de ApplicationAuditAware.
+
+4. authenticationManager(AuthenticationConfiguration config)
+    - Expose un bean AuthenticationManager à partir de la configuration d’authentification globale. Cet objet est utilisé pour gérer l’authentification dans l’application, par exemple dans un contrôleur d’authentification.
+
+5. passwordEncoder()
+    - Définit un bean PasswordEncoder qui utilise BCryptPasswordEncoder pour hasher les mots de passe de manière sécurisée. C’est la méthode recommandée pour stocker les mots de passe.
+
+En résumé : chaque méthode expose un composant clé de la configuration de sécurité et d’audit pour l’application Spring Boot, facilitant la gestion sécurisée des utilisateurs et des accès.
